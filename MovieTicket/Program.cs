@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using MovieTicket.Data;
+using MovieTicket.Interface;
 using MovieTicket.Interface.Auth;
 using MovieTicket.Repository;
 using MovieTicket.Services;
@@ -26,8 +27,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         ValidateLifetime=true,
                         ValidateIssuerSigningKey=true,
 
-                        ValidIssuer=builder.Configuration["jwt:Issuer"],
-                        ValidAudience=builder.Configuration["jwt:Audience"],
+                        ValidIssuer=builder.Configuration["Jwt:Issuer"],
+                        ValidAudience=builder.Configuration["Jwt:Audience"],
 
                         IssuerSigningKey=new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
@@ -36,30 +37,38 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     };
                 });
 
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-options.SwaggerDoc("v1",new OpenApiInfo{
-        Title="Move Ticket Booking app",
-        Version="v1",
-        Description="Api for managing the movies,cinemas, showtimes,bookings"
+    options.AddSecurityDefinition("Bearer",new OpenApiSecurityScheme
+    {
+        Name="Authorization",
+        Type=SecuritySchemeType.Http,
+        Scheme="bearer",
+        BearerFormat="JWT",
+        In=ParameterLocation.Header,
+        Description="Enter your token"
+    });
+    options.AddSecurityRequirement(Document=>
+    new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer",Document)]=[]
+    });
+
+
 });
-options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-{
-    Name="Authorization",
-    Type=SecuritySchemeType.Http,
-    Scheme="Bearer",
-    BearerFormat="Jwt",
-    In=ParameterLocation.Header,
-    Description="Enter your JWT token"
-});
-});
+
+
+
 
 builder.Services.AddScoped<IAuthRepository,  AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
+builder.Services.AddScoped<ICinemaService,CinemaService>();
 
 
 var app=builder.Build();
@@ -76,8 +85,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
