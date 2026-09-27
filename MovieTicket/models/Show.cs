@@ -4,7 +4,7 @@ public class Show
 {
     public int Id{get;set;}
     public DateTime ShowTime{get;set;}
-
+    public decimal Price{get;set;}
     public int CinemaId{get;set;}
     public Cinema? Cinema{get;set;}
 

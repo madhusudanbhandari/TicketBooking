@@ -69,6 +69,8 @@ builder.Services.AddScoped<IAuthRepository,  AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
 builder.Services.AddScoped<ICinemaService,CinemaService>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IMovieService,MovieService>();
 
 
 var app=builder.Build();
