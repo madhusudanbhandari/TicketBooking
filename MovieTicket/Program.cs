@@ -7,6 +7,7 @@ using Microsoft.OpenApi;
 using MovieTicket.Data;
 using MovieTicket.Interface;
 using MovieTicket.Interface.Auth;
+using MovieTicket.Middleware;
 using MovieTicket.Repository;
 using MovieTicket.Services;
 
@@ -87,6 +88,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
