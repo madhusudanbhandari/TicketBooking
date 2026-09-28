@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using MovieTicket.Exceptions;
+using AutoMapper;
 
 namespace MovieTicket.Services;
 
@@ -13,11 +14,13 @@ public class AuthService : IAuthService
 {
     private readonly IAuthRepository _authRepository;
     private readonly IConfiguration _configuration;
+    private readonly IMapper _mapper;
 
-    public AuthService(IAuthRepository authRepository,IConfiguration configuration)
+    public AuthService(IAuthRepository authRepository,IConfiguration configuration,IMapper mapper)
     {
         _authRepository=authRepository;
         _configuration=configuration;
+        _mapper=mapper;
     }
     public async Task<RegisterUserResponseDto> RegisterUserAsync(RegisterUserDto dto)
     {
@@ -41,15 +44,7 @@ public class AuthService : IAuthService
         await _authRepository.AddUserAsync(user);
         await _authRepository.SaveChangesAsync();
 
-        return new RegisterUserResponseDto
-        {
-            Id=user.Id,
-            Name=user.Name,
-            Age=user.Age,
-            Email=user.Email,
-            Gender=user.Gender,
-            Role=user.Role
-        };
+        return _mapper.Map<RegisterUserResponseDto>(user);
 
 
     }
@@ -70,13 +65,9 @@ public class AuthService : IAuthService
 
         var token=GenerateToken(user);
 
-        return new LoginUserResponseDto
-        {
-            Name=user.Name,
-            Email=user.Email,
-            Role=user.Role,
-            Token=token,
-        };
+        var mappedDto= _mapper.Map<LoginUserResponseDto>(user);
+        mappedDto.Token=token;
+        return mappedDto;
     }
 
     private string GenerateToken(User user)

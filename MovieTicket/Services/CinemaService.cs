@@ -1,7 +1,9 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MovieTicket.Dtos;
 using MovieTicket.Exceptions;
 using MovieTicket.Interface;
+using MovieTicket.Mapping;
 using MovieTicket.Model;
 
 namespace MovieTicket.Services;
@@ -9,9 +11,11 @@ namespace MovieTicket.Services;
 public class CinemaService : ICinemaService
 {
     private readonly ICinemaRepository _cinemaRepository;
-    public CinemaService(ICinemaRepository cinemaRepository)
+    private readonly IMapper _mapper;
+    public CinemaService(ICinemaRepository cinemaRepository, IMapper mapper)
     {
         _cinemaRepository=cinemaRepository;
+        _mapper=mapper;
     }
 
     public async Task<ViewCinemaDto> RegisterCinema(RegisterCinemaDto dto)
@@ -26,13 +30,7 @@ public class CinemaService : ICinemaService
         await _cinemaRepository.AddCinemaAsync(cinema);
         await _cinemaRepository.SaveChangesAsync();
 
-        return new ViewCinemaDto
-        {
-            Id=cinema.Id,
-            Name=cinema.Name,
-            Location=cinema.Location,
-            ChainName=cinema.ChainName
-        };
+        return _mapper.Map<ViewCinemaDto>(cinema);
     }
 
     public async Task<ViewCinemaDto?> GetCinemaAsync(int id)
@@ -44,13 +42,7 @@ public class CinemaService : ICinemaService
             throw new NotFoundException("Cannot find the cinema");
         }
 
-        return new ViewCinemaDto
-        {
-            Id=cinema.Id,
-            Name=cinema.Name,
-            Location=cinema.Location,
-            ChainName=cinema.ChainName
-        };
+        return _mapper.Map<ViewCinemaDto>(cinema);
     }
 
     public async Task<ViewCinemaDto?> UpdateCinemaAsync(int id,UpdateCinemaDto dto)
@@ -67,13 +59,7 @@ public class CinemaService : ICinemaService
 
         await _cinemaRepository.SaveChangesAsync();
 
-        return new ViewCinemaDto
-        {
-            Id=cinema.Id,
-            Name=cinema.Name,
-            Location=cinema.Location,
-            ChainName=cinema.ChainName
-        };
+        return _mapper.Map<ViewCinemaDto>(cinema);
     } 
 
     public async Task<string?> DeleteCinemaAsync(int id)

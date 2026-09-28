@@ -2,15 +2,18 @@ using MovieTicket.Dtos;
 using MovieTicket.Interface;
 using MovieTicket.Model;
 using MovieTicket.Exceptions;
+using AutoMapper;
 
 namespace MovieTicket.Services;
 
 public class MovieService : IMovieService
 {
     private readonly IMovieRepository _movieRepository;
-    public MovieService(IMovieRepository movieRepository)
+    private readonly IMapper _mapper;
+    public MovieService(IMovieRepository movieRepository,IMapper mapper)
     {
         _movieRepository=movieRepository;
+        _mapper=mapper;
     }
 
     public async Task<ViewMovieDto> AddMovieAsync(AddMovieDto dto)
@@ -30,17 +33,8 @@ public class MovieService : IMovieService
         await _movieRepository.AddMovieAsync(movie);
         await _movieRepository.SaveChangesAsync();
 
-        return new ViewMovieDto
-        {
-            Id=movie.Id,
-            Name=movie.Name,
-            Genre=movie.Genre,
-            Director=movie.Director,
-            ReleaseDate=movie.ReleaseDate,
-            Industry=movie.Industry,
-            Starcast=movie.Starcast,
-            CinemaId=movie.CinemaId
-        };
+        return _mapper.Map<ViewMovieDto>(movie);
+
     }
 
     public async Task<ViewMovieDto?> ViewMovieAsync(int id)
@@ -52,17 +46,7 @@ public class MovieService : IMovieService
             throw new NotFoundException("Cannot find the movie");
         }
 
-        return new ViewMovieDto
-        {
-            Id=movie.Id,
-            Name=movie.Name,
-            Genre=movie.Genre,
-            Director=movie.Director,
-            ReleaseDate=movie.ReleaseDate,
-            Industry=movie.Industry,
-            Starcast=movie.Starcast,
-            CinemaId=movie.CinemaId
-        };
+        return _mapper.Map<ViewMovieDto>(movie);
         
     }
 
@@ -70,17 +54,7 @@ public class MovieService : IMovieService
     {
         var movies=await _movieRepository.GetAllMoviesAsync();
 
-        return movies.Select(movie=>new ViewMovieDto
-        {
-            Id=movie.Id,
-            Name=movie.Name,
-            Genre=movie.Genre,
-            Director=movie.Director,
-            ReleaseDate=movie.ReleaseDate,
-            Industry=movie.Industry,
-            Starcast=movie.Starcast,
-            CinemaId=movie.CinemaId
-        }).ToList();
+        return _mapper.Map<List<ViewMovieDto>>(movies);
 
     }
 
@@ -104,17 +78,7 @@ public class MovieService : IMovieService
         await _movieRepository.SaveChangesAsync();
 
 
-        return new ViewMovieDto
-        {
-            Id=movie.Id,
-            Name=movie.Name,
-            Genre=movie.Genre,
-            Director=movie.Director,
-            ReleaseDate=movie.ReleaseDate,
-            Industry=movie.Industry,
-            Starcast=movie.Starcast,
-            CinemaId=movie.CinemaId
-        };
+        return _mapper.Map<ViewMovieDto>(movie);
 
     }
 

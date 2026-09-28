@@ -7,11 +7,17 @@ using Microsoft.OpenApi;
 using MovieTicket.Data;
 using MovieTicket.Interface;
 using MovieTicket.Interface.Auth;
+using MovieTicket.Mapping;
 using MovieTicket.Middleware;
 using MovieTicket.Repository;
 using MovieTicket.Services;
 
 var builder=WebApplication.CreateBuilder(args);
+
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 builder.Services.AddDbContext<AppDbContext>(options=>
         options.UseNpgsql(
@@ -37,6 +43,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         
                     };
                 });
+
 
 
 builder.Services.AddControllers();
