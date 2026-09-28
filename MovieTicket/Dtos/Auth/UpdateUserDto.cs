@@ -1,10 +1,9 @@
 using MovieTicket.enums;
 
-namespace MovieTicket.Model;
+namespace MovieTicket.Dtos;
 
-public class User
+public class UpdateUserDto
 {
-    public int Id{get;set;}
     public string Name{get;set;}=string.Empty;
     public int Age{get;set;}
     public string Gender{get;set;}=string.Empty;
@@ -12,7 +11,4 @@ public class User
     public string Email{get;set;}=string.Empty;
     public string Password{get;set;}=string.Empty;
     public UserRole Role{get;set;}
-
-    public ICollection<Cinema> Cinemas=new List<Cinema>();
-    public ICollection<Booking> Bookings=new List<Booking>();
 }

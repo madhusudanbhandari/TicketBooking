@@ -14,5 +14,7 @@ public class Movie
     public Cinema? Cinema{get;set;}
 
     public ICollection<Show> Shows=new List<Show>();
+    public ICollection<Booking> Bookings=new List<Booking>();
+
 
 }

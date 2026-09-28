@@ -13,5 +13,6 @@ public class MappingProfile : Profile
         CreateMap<Cinema,ViewCinemaDto>();
         CreateMap<Movie, ViewMovieDto>();
         CreateMap<Show,ViewShowDto>();
+        CreateMap<Booking,ViewBookingDto>();
     }
 }

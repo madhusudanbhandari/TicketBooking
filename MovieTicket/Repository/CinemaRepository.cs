@@ -19,6 +19,12 @@ public class CinemaRepository : ICinemaRepository
         return await _context.Cinemas.FirstOrDefaultAsync(c=>c.Id==id);
     }
 
+    public async Task<List<Cinema>> GetAllCinemas()
+    {
+        return await _context.Cinemas
+                            .OrderBy(c=>c.Id)
+                            .ToListAsync();
+    }
     public async Task AddCinemaAsync(Cinema cinema)
     {
         await _context.Cinemas.AddAsync(cinema);

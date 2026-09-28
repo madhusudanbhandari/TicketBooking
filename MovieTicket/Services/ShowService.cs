@@ -24,6 +24,7 @@ public class ShowService : IShowService
         {
             ShowDate=dto.ShowDate,
             ShowTime=dto.ShowTime,
+            ScreenNumber=dto.ScreenNumber,
             Price=dto.Price,
             CinemaId=dto.CinemaId,
             MovieId=dto.MovieId
@@ -66,6 +67,7 @@ public class ShowService : IShowService
 
         show.ShowDate=dto.ShowDate;
         show.ShowTime=dto.ShowTime;
+        show.ScreenNumber=dto.ScreenNumber;
         show.Price=dto.Price;
         show.CinemaId=dto.CinemaId;
         show.MovieId=dto.MovieId;

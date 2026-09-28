@@ -18,13 +18,14 @@ public class CinemaService : ICinemaService
         _mapper=mapper;
     }
 
-    public async Task<ViewCinemaDto> RegisterCinema(RegisterCinemaDto dto)
+    public async Task<ViewCinemaDto> RegisterCinema(int userId,RegisterCinemaDto dto)
     {
         var cinema=new Cinema
         {
             Name=dto.Name,
             Location=dto.Location,
             ChainName=dto.ChainName,
+            UserId=userId
         };
 
         await _cinemaRepository.AddCinemaAsync(cinema);
@@ -45,12 +46,24 @@ public class CinemaService : ICinemaService
         return _mapper.Map<ViewCinemaDto>(cinema);
     }
 
-    public async Task<ViewCinemaDto?> UpdateCinemaAsync(int id,UpdateCinemaDto dto)
+    public async Task<List<ViewCinemaDto>> ViewAllCinemas()
+    {
+        var cinemas=await _cinemaRepository.GetAllCinemas();
+
+        return _mapper.Map<List<ViewCinemaDto>>(cinemas);    
+    }
+
+    public async Task<ViewCinemaDto?> UpdateCinemaAsync(int id,int userId,UpdateCinemaDto dto)
     {
         var cinema=await _cinemaRepository.GetCinemaAsync(id);
         if (cinema == null)
         {
             throw new NotFoundException("Cannot find the cinema");
+        }
+
+        if (cinema.UserId != userId)
+        {
+            throw new BadRequestException("This is not your cinema");
         }
 
         cinema.Name=dto.Name;
@@ -62,13 +75,18 @@ public class CinemaService : ICinemaService
         return _mapper.Map<ViewCinemaDto>(cinema);
     } 
 
-    public async Task<string?> DeleteCinemaAsync(int id)
+    public async Task<string?> DeleteCinemaAsync(int id,int userId)
     {
         var cinema=await _cinemaRepository.GetCinemaAsync(id);
 
         if (cinema == null)
         {
             throw new NotFoundException("Cannot find the cinema");
+        }
+
+        if (cinema.UserId != userId)
+        {
+            throw new BadRequestException("This is not your cinema");
         }
 
          _cinemaRepository.RemoveCinema(cinema);

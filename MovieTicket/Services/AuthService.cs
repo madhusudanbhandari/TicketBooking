@@ -49,6 +49,28 @@ public class AuthService : IAuthService
 
     }
 
+    public async Task<RegisterUserResponseDto?> UpdateUserAsync(string email, UpdateUserDto dto)
+    {
+        var user=await _authRepository.GetUserAsync(email);
+
+        if (user == null)
+        {
+            throw new NotFoundException("Cannot find the user with this email");
+        }
+
+        user.Name=dto.Name;
+        user.Age=dto.Age;
+        user.Gender=dto.Gender;
+        user.Email=dto.Email;
+        user.Password=BCrypt.Net.BCrypt.HashPassword(dto.Password);
+        user.Role=dto.Role;
+
+        await _authRepository.SaveChangesAsync();
+
+        return _mapper.Map<RegisterUserResponseDto>(user);
+
+    }
+
     public async Task<LoginUserResponseDto> LoginUserAsync(LoginUserDto dto)
     {
         var user= await _authRepository.GetUserAsync(dto.Email);

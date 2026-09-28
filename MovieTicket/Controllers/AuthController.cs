@@ -31,4 +31,11 @@ public class Authcontroller : ControllerBase
 
         return Ok(user);
     }
+
+    [HttpPatch("update-user")]
+    public async Task<IActionResult> UpdateUserAsync(string email,UpdateUserDto dto)
+    {
+        var user=await _authService.UpdateUserAsync(email,dto);
+        return Ok(user);
+    }
 }
