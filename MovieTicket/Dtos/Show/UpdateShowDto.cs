@@ -1,14 +1,10 @@
-namespace MovieTicket.Model;
+namespace MovieTicket.Dtos;
 
-public class Show
+public class UpdateShowDto
 {
-    public int Id{get;set;}
     public DateOnly ShowDate{get;set;}
     public TimeOnly ShowTime{get;set;}
     public decimal Price{get;set;}
     public int CinemaId{get;set;}
-    public Cinema? Cinema{get;set;}
-
     public int MovieId{get;set;}
-    public Movie? Movie{get;set;}
 }

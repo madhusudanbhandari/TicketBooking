@@ -79,6 +79,8 @@ builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
 builder.Services.AddScoped<ICinemaService,CinemaService>();
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IMovieService,MovieService>();
+builder.Services.AddScoped<IShowRepository,ShowRepository>();
+builder.Services.AddScoped<IShowService,ShowService>();
 
 
 var app=builder.Build();

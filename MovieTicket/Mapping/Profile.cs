@@ -12,5 +12,6 @@ public class MappingProfile : Profile
         CreateMap<User,LoginUserResponseDto>();
         CreateMap<Cinema,ViewCinemaDto>();
         CreateMap<Movie, ViewMovieDto>();
+        CreateMap<Show,ViewShowDto>();
     }
 }
