@@ -1,5 +1,7 @@
 using System.Net;
 using System.Text.Json;
+using MovieTicket.Exceptions;
+
 
 namespace MovieTicket.Middleware;
 public class GlobalExceptionMiddleware
@@ -42,8 +44,8 @@ public class GlobalExceptionMiddleware
         context.Response.ContentType="application/json";
         context.Response.StatusCode=exception switch
         {
-            KeyNotFoundException=>(int)HttpStatusCode.NotFound,
-            ArgumentException=>(int)HttpStatusCode.BadRequest,
+            NotFoundException=>(int)HttpStatusCode.NotFound,
+            BadRequestException=>(int)HttpStatusCode.BadRequest,
             UnauthorizedAccessException=>(int)HttpStatusCode.Unauthorized,
             _=>(int)HttpStatusCode.InternalServerError
         };

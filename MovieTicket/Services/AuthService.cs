@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using MovieTicket.Exceptions;
 
 namespace MovieTicket.Services;
 
@@ -34,7 +35,7 @@ public class AuthService : IAuthService
 
         if (alreadyExisting!=null)
         {
-            throw new Exception("User with this email already exist");
+            throw new BadRequestException("User with this email already exist");
         }
 
         await _authRepository.AddUserAsync(user);
@@ -59,12 +60,12 @@ public class AuthService : IAuthService
 
         if (user == null)
         {
-            throw new Exception("User with this email does not exist");
+            throw new NotFoundException("User with this email does not exist");
         }
 
         if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
         {
-            throw new Exception("Passwords did not match");
+            throw new BadRequestException("Passwords did not match");
         }
 
         var token=GenerateToken(user);

@@ -52,5 +52,7 @@ public class CinemaController : ControllerBase
         return Ok(cinema);
     }
 
+   
+
     
 }

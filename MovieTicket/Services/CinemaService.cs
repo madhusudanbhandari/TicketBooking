@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MovieTicket.Dtos;
+using MovieTicket.Exceptions;
 using MovieTicket.Interface;
 using MovieTicket.Model;
 
@@ -40,7 +41,7 @@ public class CinemaService : ICinemaService
 
         if (cinema == null)
         {
-            return null;
+            throw new NotFoundException("Cannot find the cinema");
         }
 
         return new ViewCinemaDto
@@ -57,7 +58,7 @@ public class CinemaService : ICinemaService
         var cinema=await _cinemaRepository.GetCinemaAsync(id);
         if (cinema == null)
         {
-            return null;
+            throw new NotFoundException("Cannot find the cinema");
         }
 
         cinema.Name=dto.Name;
@@ -81,7 +82,7 @@ public class CinemaService : ICinemaService
 
         if (cinema == null)
         {
-            return null;
+            throw new NotFoundException("Cannot find the cinema");
         }
 
          _cinemaRepository.RemoveCinema(cinema);

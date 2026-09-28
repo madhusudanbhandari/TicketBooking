@@ -1,6 +1,7 @@
 using MovieTicket.Dtos;
 using MovieTicket.Interface;
 using MovieTicket.Model;
+using MovieTicket.Exceptions;
 
 namespace MovieTicket.Services;
 
@@ -48,7 +49,7 @@ public class MovieService : IMovieService
 
         if (movie == null)
         {
-            throw new Exception("Cannot find the movie");
+            throw new NotFoundException("Cannot find the movie");
         }
 
         return new ViewMovieDto
@@ -89,7 +90,7 @@ public class MovieService : IMovieService
 
         if (movie == null)
         {
-            throw new Exception("Cannot find the movie");
+            throw new NotFoundException("Cannot find the movie");
         }
 
         movie.Name=dto.Name;
@@ -123,7 +124,7 @@ public class MovieService : IMovieService
 
         if (movie == null)
         {
-            throw new Exception("cannot find movie");
+            throw new NotFoundException("cannot find movie");
         }
 
          _movieRepository.RemoveMovieAsync(movie);
