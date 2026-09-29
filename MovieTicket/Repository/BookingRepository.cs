@@ -13,6 +13,10 @@ public class BookingRepository : IBookingRepository
         _context=context;
     }
 
+    public async Task<Show?> GetShowAsync(int showId)
+    {
+        return await _context.Shows.FirstOrDefaultAsync(s=>s.Id==showId);
+    }
     public async Task<Booking?> GetBookingAsync(int id)
     {
         return await _context.Bookings.FirstOrDefaultAsync(b=>b.Id==id);

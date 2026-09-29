@@ -13,6 +13,6 @@ public class Show
     public int MovieId{get;set;}
     public Movie? Movie{get;set;}
 
-     public ICollection<Booking> Bookings=new List<Booking>();
+     public ICollection<Booking> Bookings{get;set;}=new List<Booking>();
 
 }

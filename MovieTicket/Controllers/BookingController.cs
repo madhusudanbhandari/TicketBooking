@@ -7,6 +7,7 @@ using MovieTicket.Services;
 
 namespace MovieTicket.controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class BookingController : ControllerBase

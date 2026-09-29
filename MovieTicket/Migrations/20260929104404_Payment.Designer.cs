@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieTicket.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MovieTicket.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260929104404_Payment")]
+    partial class Payment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,30 +33,26 @@ namespace MovieTicket.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CinemaId")
+                    b.Property<int>("CinemaId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("MovieId")
+                    b.Property<int>("MovieId")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("PricePP")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric");
 
                     b.Property<int>("ShowId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
+                        .HasColumnType("integer");
 
                     b.Property<int>("TicketQuantity")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -151,8 +150,7 @@ namespace MovieTicket.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("numeric");
 
                     b.Property<int>("BookingId")
                         .HasColumnType("integer");
@@ -160,28 +158,25 @@ namespace MovieTicket.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("PaidAt")
+                    b.Property<DateTime>("PaidAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Provider")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
+                        .HasColumnType("integer");
 
                     b.Property<string>("TransactionId")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookingId");
+                    b.HasIndex("BookingId")
+                        .IsUnique();
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payment");
                 });
 
             modelBuilder.Entity("MovieTicket.Model.Show", b =>
@@ -256,25 +251,33 @@ namespace MovieTicket.Migrations
 
             modelBuilder.Entity("MovieTicket.Model.Booking", b =>
                 {
-                    b.HasOne("MovieTicket.Model.Cinema", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("CinemaId");
+                    b.HasOne("MovieTicket.Model.Cinema", "Cinema")
+                        .WithMany()
+                        .HasForeignKey("CinemaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("MovieTicket.Model.Movie", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("MovieId");
+                    b.HasOne("MovieTicket.Model.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("MovieTicket.Model.Show", "Show")
-                        .WithMany("Bookings")
+                        .WithMany()
                         .HasForeignKey("ShowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MovieTicket.Model.User", "User")
-                        .WithMany("Bookings")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cinema");
+
+                    b.Navigation("Movie");
 
                     b.Navigation("Show");
 
@@ -284,7 +287,7 @@ namespace MovieTicket.Migrations
             modelBuilder.Entity("MovieTicket.Model.Cinema", b =>
                 {
                     b.HasOne("MovieTicket.Model.User", "User")
-                        .WithMany("Cinemas")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -306,8 +309,8 @@ namespace MovieTicket.Migrations
             modelBuilder.Entity("MovieTicket.Model.Payment", b =>
                 {
                     b.HasOne("MovieTicket.Model.Booking", "Booking")
-                        .WithMany("Payments")
-                        .HasForeignKey("BookingId")
+                        .WithOne("Payment")
+                        .HasForeignKey("MovieTicket.Model.Payment", "BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -335,13 +338,11 @@ namespace MovieTicket.Migrations
 
             modelBuilder.Entity("MovieTicket.Model.Booking", b =>
                 {
-                    b.Navigation("Payments");
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("MovieTicket.Model.Cinema", b =>
                 {
-                    b.Navigation("Bookings");
-
                     b.Navigation("Movies");
 
                     b.Navigation("Shows");
@@ -349,21 +350,7 @@ namespace MovieTicket.Migrations
 
             modelBuilder.Entity("MovieTicket.Model.Movie", b =>
                 {
-                    b.Navigation("Bookings");
-
                     b.Navigation("Shows");
-                });
-
-            modelBuilder.Entity("MovieTicket.Model.Show", b =>
-                {
-                    b.Navigation("Bookings");
-                });
-
-            modelBuilder.Entity("MovieTicket.Model.User", b =>
-                {
-                    b.Navigation("Bookings");
-
-                    b.Navigation("Cinemas");
                 });
 #pragma warning restore 612, 618
         }

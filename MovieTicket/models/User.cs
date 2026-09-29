@@ -13,6 +13,6 @@ public class User
     public string Password{get;set;}=string.Empty;
     public UserRole Role{get;set;}
 
-    public ICollection<Cinema> Cinemas=new List<Cinema>();
-    public ICollection<Booking> Bookings=new List<Booking>();
+    public ICollection<Cinema> Cinemas{get;set;}=new List<Cinema>();
+    public ICollection<Booking> Bookings{get;set;}=new List<Booking>();
 }

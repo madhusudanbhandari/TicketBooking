@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MovieTicket.enums;
 using MovieTicket.Model;
 
 namespace MovieTicket.Data;
@@ -15,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<Movie> Movies{get;set;}
     public DbSet<Show> Shows{get;set;}
     public DbSet<Booking> Bookings{get;set;}
+    public DbSet<Payment> Payments{get;set;}
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,5 +39,40 @@ public class AppDbContext : DbContext
                     .WithMany(m=>m.Shows)
                     .HasForeignKey(s=>s.MovieId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Payment>()
+                    .HasOne(p=>p.Booking)
+                    .WithMany(b=>b.Payments)
+                    .HasForeignKey(p=>p.BookingId);
+
+        modelBuilder.Entity<Booking>()
+                    .Property(b=>b.PricePP)
+                    .HasPrecision(18,2);
+
+        modelBuilder.Entity<Booking>()
+                    .Property(b=>b.TotalAmount)
+                    .HasPrecision(18,2);
+        
+        modelBuilder.Entity<Payment>()
+                    .Property(p=>p.Amount)
+                    .HasPrecision(18,2);
+
+        modelBuilder.Entity<Booking>()
+                    .Property(b=>b.Status)
+                    .HasDefaultValue(BookingStatus.Pending);
+
+        modelBuilder.Entity<Payment>()
+                    .Property(p=>p.Status)
+                    .HasDefaultValue(PaymentStatus.Pending);
+
+        modelBuilder.Entity<Payment>()
+                    .Property(p=>p.Provider)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+        modelBuilder.Entity<Payment>()
+                    .Property(p=>p.TransactionId)
+                    .HasMaxLength(100);
+
     }
 }
