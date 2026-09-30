@@ -30,12 +30,6 @@ namespace MovieTicket.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CinemaId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("MovieId")
-                        .HasColumnType("integer");
-
                     b.Property<decimal>("PricePP")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
@@ -59,10 +53,6 @@ namespace MovieTicket.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CinemaId");
-
-                    b.HasIndex("MovieId");
 
                     b.HasIndex("ShowId");
 
@@ -256,14 +246,6 @@ namespace MovieTicket.Migrations
 
             modelBuilder.Entity("MovieTicket.Model.Booking", b =>
                 {
-                    b.HasOne("MovieTicket.Model.Cinema", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("CinemaId");
-
-                    b.HasOne("MovieTicket.Model.Movie", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("MovieId");
-
                     b.HasOne("MovieTicket.Model.Show", "Show")
                         .WithMany("Bookings")
                         .HasForeignKey("ShowId")
@@ -340,8 +322,6 @@ namespace MovieTicket.Migrations
 
             modelBuilder.Entity("MovieTicket.Model.Cinema", b =>
                 {
-                    b.Navigation("Bookings");
-
                     b.Navigation("Movies");
 
                     b.Navigation("Shows");
@@ -349,8 +329,6 @@ namespace MovieTicket.Migrations
 
             modelBuilder.Entity("MovieTicket.Model.Movie", b =>
                 {
-                    b.Navigation("Bookings");
-
                     b.Navigation("Shows");
                 });
 

@@ -23,6 +23,13 @@ public class PaymentRepository : IPaymentRepository
                     
     }
 
+    public async Task<Payment?> GetPaymentByBookingIdAsync(int id)
+    {
+        return await _context.Payments
+                    .Include(p=>p.Booking)
+                    .FirstOrDefaultAsync(p=>p.BookingId==id);
+    }
+
     public async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();

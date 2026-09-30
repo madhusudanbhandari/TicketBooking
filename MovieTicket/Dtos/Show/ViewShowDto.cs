@@ -1,4 +1,3 @@
-using MovieTicket.Migrations;
 
 namespace MovieTicket.Dtos;
 
