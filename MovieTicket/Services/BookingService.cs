@@ -35,7 +35,7 @@ public class BookingService : IBookingService
             throw new BadRequestException("Ticket cannot be less than 1");
         }
 
-        using var transaction=await _context.Database.BeginTransactionAsync();
+        await using var transaction=await _context.Database.BeginTransactionAsync();
         try
         {
             
